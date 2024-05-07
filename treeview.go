@@ -489,6 +489,18 @@ func (t *TreeView) Move(offset int) *TreeView {
 	return t
 }
 
+func (t *TreeView) ScrollTo(node *TreeNode) *TreeView {
+    for i, n := range t.nodes {
+        if n == node {
+            t.offsetY = i
+            t.movement = treeScroll
+            t.process(false)
+            return t
+        }
+    }
+	return t
+}
+
 // process builds the visible tree, populates the "nodes" slice, and processes
 // pending movement actions. Set "drawingAfter" to true if you know that
 // [TreeView.Draw] will be called immediately after this function (to avoid
@@ -748,7 +760,7 @@ func (t *TreeView) Draw(screen tcell.Screen) {
 			if node.textX+prefixWidth < width {
 				style := tcell.StyleDefault.Background(t.backgroundColor).Foreground(node.color)
 				if node == t.currentNode {
-					style = tcell.StyleDefault.Background(node.color).Foreground(t.backgroundColor)
+					style = tcell.StyleDefault.Background(tcell.ColorDarkSlateGray.TrueColor()).Foreground(node.color)
 				}
 				printWithStyle(screen, node.text, x+node.textX+prefixWidth, posY, 0, width-node.textX-prefixWidth, AlignLeft, style, false)
 			}
